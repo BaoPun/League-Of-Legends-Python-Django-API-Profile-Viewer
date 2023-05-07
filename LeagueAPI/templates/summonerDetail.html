@@ -1,0 +1,71 @@
+{% extends "master_index.html" %}
+{% load static %}
+
+{% block css %}
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block title %}
+	{{ name }} from {{ platform }}
+{% endblock %}
+
+
+{% block content %}
+	<h1>{{ name }} is level {{ level }}</h1>
+	<p>Rank: <b>{{ rank }}</b></p>
+	<p>{{ lp }}</p>
+	<p>{{ win_loss_data }}</p>
+
+	{% include "summonerInput.html" %}
+
+	<!--
+	<p>Encrypted id: {{ encryptedSummonerId }}</p>
+	<p>Puuid: {{ puuId }}</p>
+	-->
+
+	<!--<p>Back to <a href="/">Home</a></p>
+	-->
+
+	<!--
+		Highest mastery champions (top 10 by default)
+	-->
+	<div id='champion-profile-container'>
+		<button type="button" id='profile_champion_mastery'>View Most Played Champions</button>
+		<button type="button" id='profile_match_history'>View Recent Match History</button>
+		<button type="button" id='profile_live_game'>View Live Game Data</button>
+		<div class='champion-profile-info'>
+			<p>Top 10 champions</p>
+			{% for champion in championList %}
+				<ul>
+					<img src='{{ champion.image }}'>
+					{{ champion.championName }} - Mastery {{ champion.championLevel }} with {{ champion.championPoints }} points.
+				</ul>
+			{% endfor %}
+		</div>
+		<div class='champion-profile-info'>
+			<p>Match History</p>
+			{% for match in matchList %}
+				<ul class='match-history-detail'>
+					<div class='{{ match.win }}'>
+						<img src='{{ match.championImageUrl }}' class='champion-history-icon'>
+						<div class="tooltip">
+							<p class='champion-history-hover-text'>{{ match.championName }}</p>
+						</div>
+						<br>Game created on <p class='gameCreation'>{{ match.gameCreationTime }}</p> - Game Lasted {{ match.gameEndTimeMinutes }} minutes and {{ match.gameEndTimeSeconds }} seconds
+						<div class='match-history-viewer-container'>
+							
+						</div>
+					</div>
+				</ul>
+			{% endfor %}
+		</div>
+	</div>
+
+	
+
+{% endblock %}
+
+{% block js %}
+	<script src="{% static 'main_index.js' %}"></script>
+	<script src="{% static 'summoner_detail.js' %}"></script>
+{% endblock %}

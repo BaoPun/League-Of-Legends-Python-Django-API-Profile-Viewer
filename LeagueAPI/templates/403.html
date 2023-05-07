@@ -1,0 +1,16 @@
+{% extends "master_index.html" %}
+
+{% block title %}
+	403 FORBIDDEN
+{% endblock %}
+
+
+{% block content %}
+	<h1>AYO YOU CANNOT ACCESS ANYTHING.  YOUR ACCESS IS RESTRICTED</h1>
+	<form action='resubmit_api_key'>
+		<p>Please input the secret key in the input box below:</p>
+		<input type="text" id="apiKey" name="apiKey"><br><br>
+		<!--<p>Please click <a href='/'>here</a> to go back to the main page</p>-->
+		<input type="submit" value="Submit">
+	</form>
+{% endblock %}
