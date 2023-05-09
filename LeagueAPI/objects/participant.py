@@ -2,6 +2,7 @@ class Participant:
     def __init__(self):
         self.assists = None
         self.championName = None
+        self.championImage = None
         self.deaths = None
         self.items = [None, None, None, None, None, None, None]
         self.kills = None
@@ -19,6 +20,9 @@ class Participant:
 
     def set_championName(self, championName):
         self.championName = championName
+
+    def set_championImage(self, championImage):
+        self.championImage = championImage;
 
     def set_deaths(self, deaths):
         self.deaths = deaths

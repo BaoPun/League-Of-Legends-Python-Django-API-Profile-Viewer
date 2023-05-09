@@ -51,12 +51,23 @@ $(document).ready(function () {
 		$(this).mouseleave(function(){
             $('.tooltip, p.champion-history-hover-text').children().eq(i).css('visibility', 'hidden');
 		})
+
+		// When clicking on the icon, collapse the expanded match history details
+		$(this).click(function(){
+			console.log('Time to close the match history for this match!');
+		})
 	});
 
 	// When any of the match history details are clicked, expand it to show all participating players and their ending items.
 	$('.match-history-detail').each(function(i){
 		$(this).click(function(){
 			console.log('69 is a nice number :)');
+			if($(this).children().eq(0).children().eq(4).css('display') == 'block'){
+				$(this).children().eq(0).children().eq(4).css('display', 'none');
+			}
+			else{
+				$(this).children().eq(0).children().eq(4).css('display', 'block');
+			}
 		});
 	});
 });

@@ -53,7 +53,10 @@
 						</div>
 						<br>Game created on <p class='gameCreation'>{{ match.gameCreationTime }}</p> - Game Lasted {{ match.gameEndTimeMinutes }} minutes and {{ match.gameEndTimeSeconds }} seconds
 						<div class='match-history-viewer-container'>
-							
+							<p>Game Type: {{ match.queueType }}<br>
+							{% for participant in match.participants %}
+								{{ participant.teamPosition }}&emsp;&emsp;{{ participant.summonerName }}&emsp;&emsp;<img src='{{ participant.championImage }}' class="match-history-champion-image"><br>
+							{% endfor %}
 						</div>
 					</div>
 				</ul>

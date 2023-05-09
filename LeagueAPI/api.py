@@ -8,7 +8,7 @@ from .objects.participant import Participant
 	This file is to process all league-related API calls.
 	For now, store the API key here.
 """
-api_key = ['RGAPI-dce8c927-d435-4c0b-92a6-b2e871df46e3']
+api_key = ['RGAPI-4412467a-0e39-421a-8e5d-02f4a37c26a6']
 summoner_id = [None, None, None]  # summonerName, encryptedSummonerId, puuid
 area = [None, None]  # platform, region
 version = None
@@ -157,11 +157,12 @@ def get_summoner_match_history(match_history_responses):
             # Add a bunch of data to the participant object
             participant.set_assists(data['assists'])
             participant.set_championName(champion_to_id_information[data['championId']])
+            participant.set_championImage(champion_image_url_information[participant.get_championName()])
             participant.set_deaths(data['deaths'])
             participant.set_kills(data['kills'])
             participant.set_minionsKilled(data['totalMinionsKilled'] + data['neutralMinionsKilled'])
             participant.set_summonerName(data['summonerName'])
-            participant.set_teamPosition('N/A' if data['teamPosition'] == '' else data['teamPosition'])
+            participant.set_teamPosition('' if data['teamPosition'] == '' 'SUPPORT' else ('SUPPORT' if data['teamPosition'] == 'UTILITY' else data['teamPosition']))
             participant.set_teamSide('Blue' if data['teamId'] == 100 else 'Red')
             participant.set_win('Yes' if data['win'] else 'No')
             participant.set_items([

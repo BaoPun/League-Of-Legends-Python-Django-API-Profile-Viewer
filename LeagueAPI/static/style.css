@@ -24,3 +24,22 @@ body {
     text-align: center;
     position: absolute;
 }
+
+/* BELOW IS THE MATCH HISTORY DETAILS */
+
+/*
+	By default, make the match-history-viewer-container be hidden.
+	Only show it when the specific match is clicked
+*/
+.match-history-viewer-container{
+	display: none;
+}
+
+/*
+    Resize the image
+*/
+.match-history-champion-image{
+    width: 2%;
+    height: 2%;
+    border: 1px solid black;
+}
