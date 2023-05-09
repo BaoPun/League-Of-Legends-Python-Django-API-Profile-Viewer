@@ -8,7 +8,7 @@ from .objects.participant import Participant
 	This file is to process all league-related API calls.
 	For now, store the API key here.
 """
-api_key = ['RGAPI-4412467a-0e39-421a-8e5d-02f4a37c26a6']
+api_key = ['ENTER API KEY HERE']
 summoner_id = [None, None, None]  # summonerName, encryptedSummonerId, puuid
 area = [None, None]  # platform, region
 version = None
