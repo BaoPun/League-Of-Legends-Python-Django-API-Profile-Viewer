@@ -1,0 +1,45 @@
+body {
+    background-color: lightblue;
+    font-family: verdana;
+}
+  
+.gameCreation{
+    display: inline;
+}
+  
+  /*
+      A class for the Match History tab.
+      Main action is to be able to hover over the icon and display tooltip of the champion in question.  However, disable it by default.  Only make the tooltip visible if it's hovered
+  */
+.tooltip{
+    display: inline-block;
+    position: relative;
+}
+
+.tooltip .champion-history-hover-text{
+    visibility: hidden;
+    z-index: 1;
+    background-color: greenyellow;
+    width: 120px;
+    text-align: center;
+    position: absolute;
+}
+
+/* BELOW IS THE MATCH HISTORY DETAILS */
+
+/*
+	By default, make the match-history-viewer-container be hidden.
+	Only show it when the specific match is clicked
+*/
+.match-history-viewer-container{
+	display: none;
+}
+
+/*
+    Resize the image
+*/
+.match-history-champion-image{
+    width: 2%;
+    height: 2%;
+    border: 1px solid black;
+}
