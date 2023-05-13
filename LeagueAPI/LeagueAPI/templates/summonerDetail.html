@@ -55,7 +55,24 @@
 						<div class='match-history-viewer-container'>
 							<p>Game Type: {{ match.queueType }}<br>
 							{% for participant in match.participants %}
-								{{ participant.teamPosition }}&emsp;&emsp;{{ participant.summonerName }}&emsp;&emsp;<img src='{{ participant.championImage }}' class="match-history-champion-image"><br>
+								{{ participant.teamPosition }}&emsp;&emsp;
+								<a href='/platform/{{ match.platform }}/summoner/{{ participant.summonerName }}'>{{ participant.summonerName }}</a>&emsp;&emsp;
+								<img src='{{ participant.championImage }}' class="match-history-champion-image">&emsp;&emsp;
+								<div class='participant-items'>
+									{% for item in participant.items %}
+										{% for key, omegalul_useless_value_icant_kekw in item.items %}
+										<img src="http://ddragon.leagueoflegends.com/cdn/{{ match.version }}/img/item/{{ key }}.png" class="item-icon-name">
+										<div class="item-tooltip">
+											This item is {{ omegalul_useless_value_icant_kekw }}
+										</div>
+										<br>
+										{% endfor%}
+									{% endfor %}
+								</div>
+								{{ participant.kills }} kills/{{ participant.deaths }} deaths/{{participant.assists }} assists
+
+
+								<br>
 							{% endfor %}
 						</div>
 					</div>

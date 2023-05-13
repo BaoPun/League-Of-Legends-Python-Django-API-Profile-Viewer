@@ -4,6 +4,8 @@ class Match:
         self.gameEndTimeMinutes = None
         self.gameEndTimeSeconds = None
         self.queueType = None
+        self.platform = None;
+        self.version = None;
         self.participants = []
 
         # For the specific user, add the image of the champion they were playing, as well as if they won or not
@@ -23,6 +25,12 @@ class Match:
 
     def add_queueType(self, queueType):
         self.queueType = queueType
+
+    def add_platform(self, platform):
+        self.platform = platform;
+    
+    def add_version(self, version):
+        self.version = version;
 
     def add_participant(self, participant):
         self.participants.append(participant)
@@ -48,6 +56,12 @@ class Match:
 
     def get_queueType(self):
         return self.queueType
+    
+    def get_platform(self):
+        return self.platform;
+
+    def get_version(self):
+        return self.version;
 
     def get_participants(self):
         return self.participants

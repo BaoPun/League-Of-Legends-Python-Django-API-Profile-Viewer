@@ -43,3 +43,15 @@ body {
     height: 2%;
     border: 1px solid black;
 }
+
+
+/*
+    ITEMS
+*/
+.participant-items{
+    display: flex;
+}
+
+.item-tooltip{
+    visibility: hidden;
+}

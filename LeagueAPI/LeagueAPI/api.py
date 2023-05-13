@@ -8,7 +8,7 @@ from .objects.participant import Participant
 	This file is to process all league-related API calls.
 	For now, store the API key here.
 """
-api_key = ['ENTER API KEY HERE']
+api_key = ['RGAPI-2bf64b07-40ec-4497-bea0-076764625992']
 summoner_id = [None, None, None]  # summonerName, encryptedSummonerId, puuid
 area = [None, None]  # platform, region
 version = None
@@ -150,6 +150,8 @@ def get_summoner_match_history(match_history_responses):
         matchObject.add_minutes(math.trunc(match_data['gameDuration'] / 60))
         matchObject.add_seconds(round(match_data['gameDuration'] % 60, 0))
         matchObject.add_queueType(queues[match_data['queueId']])
+        matchObject.add_platform(area[0]);
+        matchObject.add_version(version);
 
         for data in match_data['participants']:
             participant = Participant()

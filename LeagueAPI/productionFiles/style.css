@@ -43,3 +43,16 @@ body {
     height: 2%;
     border: 1px solid black;
 }
+
+
+/*
+    ITEMS
+*/
+.participant-items .item-icon-name{
+    float: left;
+    position: relative;
+}
+
+.item-tooltip{
+    visibility: hidden;
+}
