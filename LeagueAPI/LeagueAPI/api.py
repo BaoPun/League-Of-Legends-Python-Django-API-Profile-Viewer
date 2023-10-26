@@ -4,11 +4,18 @@ import math
 from datetime import datetime
 from .objects.match import Match
 from .objects.participant import Participant
+from django.db import connection
+
+# Set up environment variables to use
+import environ
+env = environ.Env()
+environ.Env.read_env()
+
 """
 	This file is to process all league-related API calls.
 	For now, store the API key here.
 """
-api_key = ['RGAPI-2bf64b07-40ec-4497-bea0-076764625992']
+api_key = env('api_key')
 summoner_id = [None, None, None]  # summonerName, encryptedSummonerId, puuid
 area = [None, None]  # platform, region
 version = None
@@ -16,7 +23,7 @@ version = None
 
 # Update the API key via method instead of doing so directly
 def update_api_key(api_key_input):
-    api_key[0] = api_key_input
+    api_key = api_key_input
 
 
 # Update the platform, and also determine the region
@@ -43,7 +50,7 @@ def get_regional_value(platform):
 # Get the summoner's encrypted id and puuid and store it within summoner_id.
 def get_summoner_api(platform, name):
     summoner_id_url = 'https://{platform}.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summoner}?api_key={api}'.format(
-        platform=platform, summoner=name, api=api_key[0])
+        platform=platform, summoner=name, api=api_key)
     summoner_response_json = requests.get(summoner_id_url).json()
     if 'status' in summoner_response_json:
         print('There is a status code, indicating that there is an error.')
@@ -83,9 +90,10 @@ def make_async_api_calls(count):
         count = 10;
     result = [];
     api_urls = [
-        'https://{platform}.api.riotgames.com/lol/league/v4/entries/by-summoner/{eid}/?api_key={api}'.format(platform=area[0], eid=summoner_id[1], api=api_key[0]),
-        'https://{platform}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{eid}/top?count=7&api_key={api}'.format(platform=area[0], eid=summoner_id[1], api=api_key[0]),
-        'https://{region}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count={count}&api_key={api}'.format(region=area[1], puuid=summoner_id[2], count=count, api=api_key[0]),
+        'https://{platform}.api.riotgames.com/lol/league/v4/entries/by-summoner/{eid}/?api_key={api}'.format(platform=area[0], eid=summoner_id[1], api=api_key),
+        #'https://{platform}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{eid}/top?count=7&api_key={api}'.format(platform=area[0], eid=summoner_id[1], api=api_key),
+        'https://{platform}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{eid}?api_key={api}'.format(platform=area[0], eid=summoner_id[1], api=api_key),
+        'https://{region}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&count={count}&api_key={api}'.format(region=area[1], puuid=summoner_id[2], count=count, api=api_key),
     ];
     responses = list(grequests.map((grequests.get(url) for url in api_urls), size=3))
 
@@ -94,7 +102,7 @@ def make_async_api_calls(count):
     result.append(get_champion_top_mastery(responses[1].json()));
 
     # The third result of the asynchronous call will have to be put into an array, and then pass that array onto the method
-    match_api_url = ['https://{region}.api.riotgames.com/lol/match/v5/matches/{match}?api_key={api}'.format(region=area[1], match=match, api=api_key[0]) for match in responses[2].json()];   
+    match_api_url = ['https://{region}.api.riotgames.com/lol/match/v5/matches/{match}?api_key={api}'.format(region=area[1], match=match, api=api_key) for match in responses[2].json()];   
     match_history_responses = list(grequests.map((grequests.get(match_url) for match_url in match_api_url)));
     match_history_responses = [match.json()['info'] for match in match_history_responses]
     result.append(get_summoner_match_history(match_history_responses));
@@ -121,7 +129,9 @@ def get_summoner_solo_queue_rank(summoner_rank_json):
 def get_champion_top_mastery(summoner_champion_mastery_json):
     #summoner_champion_mastery_response = requests.get('https://{platform}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/{eid}/top?count=10&api_key={api}'.format(platform=area[0], eid=summoner_id[1], api=api_key[0]))
     #summoner_champion_mastery_json = summoner_champion_mastery_response.json()
+    #print(summoner_champion_mastery_json);
     championMasteryObject = []
+    counter = 0
     for champion in summoner_champion_mastery_json:
         championMasteryObject.append({
             'championName': champion_to_id_information[champion['championId']],
@@ -129,6 +139,11 @@ def get_champion_top_mastery(summoner_champion_mastery_json):
             'championPoints': champion['championPoints'],
             'image': champion_image_url_information[champion_to_id_information[champion['championId']]],
         })
+
+        # Only take the top 7 champions
+        counter += 1
+        if counter == 7:
+            break
     return championMasteryObject
 
 
@@ -210,10 +225,23 @@ def get_summoner_match_history(match_history_responses):
 
 """
     Below API calls are automatically called as soon as the home page is loaded, i.e. these are static.
+    todo: add these to the database
 """
 # Make an api call to get the current version of the game
 version_response = requests.get('https://ddragon.leagueoflegends.com/api/versions.json')
 version = version_response.json()[0]
+try:
+    with connection.cursor() as cursor:
+        cursor.execute('INSERT INTO Version (version) VALUES (%s)', [version])
+except Exception as e:
+    print('Error, version is already in the database.  Overriding version...')
+    with connection.cursor() as cursor:
+        cursor.execute('UPDATE Version set version = %s', [version])
+finally:
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * FROM Version WHERE version = %s', [version])
+        version_retrieval = cursor.fetchone()
+        print('Latest version: {0}'.format(version_retrieval))
 
 # Make an api call to get ALL champions and create a mapping (id : champion)
 champion_data_response = requests.get('http://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/champion.json'.format(version=version))
@@ -221,6 +249,13 @@ champion_data_json = champion_data_response.json()
 champion_data_json['data']['MonkeyKing']['id'] = 'Wukong'
 champion_to_id_information = {int(champion_data_json['data'][champion]['key']) : champion_data_json['data'][champion]['id'] for champion in champion_data_json['data']}
 champion_to_id_information[-1] = 'N/A'
+for champion_id in champion_to_id_information:
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute('INSERT INTO Champion (id, name) VALUES (%s, %s)', [champion_id, champion_to_id_information[champion_id]])
+    except Exception as e:
+        pass
+        #print('Error, champion data is already in the database.\nDetails:', e)
 
 # Make a series of API calls to get the images of each champion
 champion_image_url_information = {

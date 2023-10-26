@@ -61,10 +61,13 @@
 								<div class='participant-items'>
 									{% for item in participant.items %}
 										{% for key, omegalul_useless_value_icant_kekw in item.items %}
-										<img src="http://ddragon.leagueoflegends.com/cdn/{{ match.version }}/img/item/{{ key }}.png" class="item-icon-name">
-										<div class="item-tooltip">
-											This item is {{ omegalul_useless_value_icant_kekw }}
-										</div>
+										{% if key > 0 %}
+											<img src="http://ddragon.leagueoflegends.com/cdn/{{ match.version }}/img/item/{{ key }}.png" class="item-icon-name">
+											<div class="item-tooltip">
+												This item is {{ omegalul_useless_value_icant_kekw }}
+											</div>
+										{% endif %}
+										
 										<br>
 										{% endfor%}
 									{% endfor %}

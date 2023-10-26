@@ -12,8 +12,16 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+# Set up environment variables to use
+import environ
+import os
+env = environ.Env()
+#environ.Env.read_env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -74,10 +82,21 @@ WSGI_APPLICATION = 'LeagueAPI.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}"""
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',     # change from django.db.backends.sqlite3 to django.db.backends.postgresql
+        'NAME': env("db_maintenance_name"),                              #BASE_DIR / 'db.sqlite3',
+        'USER': env('db_username'),
+        'PASSWORD': env('db_password'),
+        'HOST': env('db_host'),
+        'PORT': env('db_port'),
     }
 }
 
